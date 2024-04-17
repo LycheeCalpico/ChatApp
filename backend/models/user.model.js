@@ -21,8 +21,7 @@ const userSchema = new mongoose.Schema(
       enum: ["male", "female"],
     },
     profilePic: {
-      type: String,
-      default: "",
+      type: Buffer,
     },
   },
   { timestamps: true }

@@ -1,6 +1,10 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndCookie from "../utils/generateToken.js";
+import fs from "fs";
+import path from "path";
+
+import { fileURLToPath } from "url";
 
 export const login = async (req, res) => {
   try {
@@ -40,7 +44,7 @@ export const logout = (req, res) => {
 export const signup = async (req, res) => {
   try {
     const { fullName, username, password, confirmPassword, gender } = req.body;
-
+    const profilePic = req?.file?.buffer;
     if (password !== confirmPassword) {
       return res
         .status(400)
@@ -53,15 +57,18 @@ export const signup = async (req, res) => {
     // HASH PASSWORD HERE
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
-    const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const filePath = path.join(__dirname, "..", "public", "avatar.png");
+    const avatarImage = fs.readFileSync(filePath);
 
     const newUser = new User({
       fullName,
       username,
       password: hashedPassword,
       gender,
-      profilePic: gender === "female" ? girlProfilePic : boyProfilePic,
+      profilePic: profilePic ? profilePic : avatarImage,
     });
     console.log(newUser);
     if (newUser) {

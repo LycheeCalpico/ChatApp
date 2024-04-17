@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import useConversation from "../../zustand/useConversation";
 import { useSocketContext } from "../../context/SocketContext";
 
@@ -8,8 +8,17 @@ const Conversation = (props) => {
   const isSelected = selectedConversation?._id === conversation._id;
   const { onlineUsers } = useSocketContext();
   const isOnline = onlineUsers.includes(conversation._id);
-  console.log(onlineUsers);
-  console.log(isOnline);
+  const [imageSrc, setImageSrc] = useState("");
+  useEffect(() => {
+    const getImage = async () => {
+      const imageBase64 = Buffer.from(conversation.profilePic.data).toString(
+        "base64"
+      );
+      // Set the imageSrc state to the data URL including the MIME type for PNG
+      setImageSrc(`data:image/png;base64,${imageBase64}`);
+    };
+    getImage();
+  }, [conversation]);
   return (
     <>
       <div
@@ -20,7 +29,7 @@ const Conversation = (props) => {
       >
         <div className={`avatar ${isOnline ? "online" : ""}`}>
           <div className="w-12 rounded-full">
-            <img src={conversation.profilePic} alt="user avatar" />
+            <img src={imageSrc} alt="user avatar" />
           </div>
         </div>
         <div className="flex flex-col flex-1">
