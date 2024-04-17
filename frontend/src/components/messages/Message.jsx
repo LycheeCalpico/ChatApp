@@ -14,8 +14,12 @@ const Message = ({ message }) => {
             alt="Tailwind CSS chat bubble component"
             src={
               messageFromMe
-                ? authUser.profilePic
-                : selectedConversation.profilePic
+                ? `data:image/png;base64,${Buffer.from(
+                    authUser.profilePic.data
+                  ).toString("base64")}`
+                : `data:image/png;base64,${Buffer.from(
+                    selectedConversation.profilePic.data
+                  ).toString("base64")}`
             }
           />
         </div>
