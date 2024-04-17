@@ -32,17 +32,16 @@ export const logout = (req, res) => {
     res.cookie("jwt", "", { maxAge: 0 });
     res.status(200).json("Logout successfully!");
   } catch (error) {
-    console.log("Error in login controller", error.message);
+    console.log("Error in logout controller", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 export const signup = async (req, res) => {
   try {
-    const { fullName, username, password, confirmedPassword, gender } =
-      req.body;
+    const { fullName, username, password, confirmPassword, gender } = req.body;
 
-    if (password !== confirmedPassword) {
+    if (password !== confirmPassword) {
       return res
         .status(400)
         .json({ error: "password and confirmed password do not match" });
@@ -64,10 +63,12 @@ export const signup = async (req, res) => {
       gender,
       profilePic: gender === "female" ? girlProfilePic : boyProfilePic,
     });
+    console.log(newUser);
     if (newUser) {
       // Generate JWT here
       generateTokenAndCookie(newUser._id, res);
       await newUser.save();
+      console.log("new user saved");
       res.status(201).json({
         _id: newUser.id,
         fullName: newUser.fullName,

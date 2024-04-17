@@ -5,6 +5,7 @@ import protectedRoute from "../middleware/protectedRoute.js";
 const router = express.Router();
 
 // add middleware to check if user logged in or not;
-router.get("/", protectedRoute, getMessages);
+router.get("/:id", protectedRoute, getMessages);
+router.post("/send/:id", protectedRoute, sendMessage);
 
 export default router;

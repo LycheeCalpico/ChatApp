@@ -1,20 +1,31 @@
 import React from "react";
+import useConversation from "../../zustand/useConversation";
+import { useSocketContext } from "../../context/SocketContext";
 
-const Conversation = () => {
+const Conversation = (props) => {
+  const { conversation } = props;
+  const { selectedConversation, setSelectedConversation } = useConversation();
+  const isSelected = selectedConversation?._id === conversation._id;
+  const { onlineUsers } = useSocketContext();
+  const isOnline = onlineUsers.includes(conversation._id);
+  console.log(onlineUsers);
+  console.log(isOnline);
   return (
     <>
-      <div className="flex gap-2 items-center hover:bg-green-300 rounded p-2 py-1 cursor-pointer">
-        <div className="avatar online">
+      <div
+        className={`flex gap-2 items-center hover:bg-blue-100 rounded p-2 py-1 cursor-pointer ${
+          isSelected ? `bg-pink-200` : ""
+        }`}
+        onClick={(e) => setSelectedConversation(conversation)}
+      >
+        <div className={`avatar ${isOnline ? "online" : ""}`}>
           <div className="w-12 rounded-full">
-            <img
-              src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-              alt="user avatar"
-            />
+            <img src={conversation.profilePic} alt="user avatar" />
           </div>
         </div>
         <div className="flex flex-col flex-1">
           <div className="flex gap-3 justify-between">
-            <p className="font-bold text-slate-700">Fauna Qiu</p>
+            <p className="font-bold text-slate-700">{conversation.username}</p>
             <span className="text-xl">🎃</span>
           </div>
         </div>
